@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:padding="0dp"
-    tools:context="com.example.lehoanggiang.traicaythanhsang.activity.ComBoActivity">
+    tools:context="com.example.Admin_ThanhSang.traicaythanhsang.activity.ComBoActivity">
     <android.support.v7.widget.Toolbar
         app:title ="ComBo Trái Cây"
         android:background="#4AA3DF"

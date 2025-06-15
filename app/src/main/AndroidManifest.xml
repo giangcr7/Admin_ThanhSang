@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.lehoanggiang.traicaythanhsang">
+    package="com.example.Admin_ThanhSang.traicaythanhsang">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -27,7 +27,6 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.SauRiengActivity" />
         <activity android:name=".activity.DuaHauActivity" />
-        <activity android:name=".activity.LichSuActivity" />
         <activity android:name=".activity.ChiTietSanPham" />
         <activity android:name=".activity.GioHangActivity" />
         <activity android:name=".activity.Thongtinkhachhang" />
@@ -43,13 +42,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".activity.ThongTinActivity"
-            android:label="@string/title_activity_thong_tin" />
         <activity android:name=".activity.NhapKhauActivity" />
         <activity android:name=".activity.HuuCoActivity" />
         <activity android:name=".activity.ComBoActivity" />
         <activity android:name=".activity.Register" />
+        <activity android:name=".activity.QuanLyActivity" />
+        <activity android:name=".activity.ThemActivity" />
+        <activity android:name=".activity.SuaActivity" />
+        <activity android:name=".activity.ThongKeActivity"></activity>
     </application>
 
 </manifest>

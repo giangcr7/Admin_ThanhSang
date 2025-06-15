@@ -1,4 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Trái cây Thanh Sang</string>
+    <string name="app_name">Manager</string>
     <string name="title_activity_thong_tin">Map</string>
+    <string name="select_category_prompt">Chọn loại sản phẩm</string>
+    <string-array name="thongke_types">
+        <item>Thống kê theo</item>
+        <item>Theo ngày</item>
+        <item>Theo tháng</item>
+        <item>Theo năm</item>
+    </string-array>
 </resources>

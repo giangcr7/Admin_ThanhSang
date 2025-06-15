@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_quan_ly"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="0dp"
+    android:orientation="vertical">
+
+    <!-- Toolbar -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarquanly"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#4AA3DF"
+        app:title="Quản lý sản phẩm"
+        app:titleTextColor="#f9f6f5"
+        app:menu="@menu/menu_quan_ly" />
+
+    <!-- Thanh tìm kiếm -->
+    <EditText
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tìm kiếm sản phẩm..."
+        android:inputType="text"
+        android:padding="8dp"/>
+
+    <!-- RecyclerView -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerviewquanly"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"/>
+
+    <!-- Nút làm mới -->
+    <Button
+        android:id="@+id/btnRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Làm mới"
+        android:layout_gravity="center"
+        android:padding="8dp"/>
+
+</LinearLayout>

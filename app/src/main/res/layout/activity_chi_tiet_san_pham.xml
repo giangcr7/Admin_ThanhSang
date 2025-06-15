@@ -5,7 +5,7 @@
     android:id="@+id/activity_chi_tiet_san_pham"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.lehoanggiang.traicaythanhsang.activity.ChiTietSanPham"
+    tools:context="com.example.Admin_ThanhSang.traicaythanhsang.activity.ChiTietSanPham"
     android:orientation="vertical">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarchitietsanpham"

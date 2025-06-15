@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <android.support.v7.widget.Toolbar
+        app:title="Thống kê"
+        android:id="@+id/toolbarthongke"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/txtTongDoanhThu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tổng doanh thu: 0 VNĐ"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+    <Spinner
+        android:id="@+id/spinnerType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/thongke_types"/>
+
+    <EditText
+        android:id="@+id/editDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập ngày (YYYY-MM-DD)"
+        android:inputType="date"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/editMonth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập tháng (MM)"
+        android:inputType="number"
+        android:visibility="gone"/>
+
+    <EditText
+        android:id="@+id/editYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập năm (YYYY)"
+        android:inputType="number"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnThongKe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thống kê"
+        android:layout_gravity="center"/>
+
+</LinearLayout>
