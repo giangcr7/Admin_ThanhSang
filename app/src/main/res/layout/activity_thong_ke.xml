@@ -1,60 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp">
-    <android.support.v7.widget.Toolbar
-        app:title="Thống kê"
-        android:id="@+id/toolbarthongke"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </android.support.v7.widget.Toolbar>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/txtTongDoanhThu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tổng doanh thu: 0 VNĐ"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
-
-    <Spinner
-        android:id="@+id/spinnerType"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/thongke_types"/>
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <EditText
-        android:id="@+id/editDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nhập ngày (YYYY-MM-DD)"
-        android:inputType="date"
-        android:visibility="gone"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarthongke"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="Thống kê" />
 
-    <EditText
-        android:id="@+id/editMonth"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nhập tháng (MM)"
-        android:inputType="number"
-        android:visibility="gone"/>
+        <TextView
+            android:id="@+id/txtTongDoanhThu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tổng doanh thu: 0 VNĐ"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp" />
 
-    <EditText
-        android:id="@+id/editYear"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nhập năm (YYYY)"
-        android:inputType="number"
-        android:visibility="gone"/>
+        <Spinner
+            android:id="@+id/spinnerType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:entries="@array/thongke_types" />
 
-    <Button
-        android:id="@+id/btnThongKe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Thống kê"
-        android:layout_gravity="center"/>
+        <EditText
+            android:id="@+id/editDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập ngày (YYYY-MM-DD)"
+            android:inputType="date"
+            android:visibility="gone"
+            android:layout_marginTop="4dp" />
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/editMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập tháng (MM)"
+            android:inputType="number"
+            android:visibility="gone"
+            android:layout_marginTop="4dp" />
+
+        <EditText
+            android:id="@+id/editYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập năm (YYYY)"
+            android:inputType="number"
+            android:visibility="gone"
+            android:layout_marginTop="4dp" />
+
+        <Button
+            android:id="@+id/btnThongKe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thống kê"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp" />
+
+        <!-- Biểu đồ hiển thị ngang hàng -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChart"
+                android:layout_width="0dp"
+                android:layout_height="300dp"
+                android:layout_weight="1"
+                android:layout_marginRight="4dp" />
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChartSoLuong"
+                android:layout_width="0dp"
+                android:layout_height="300dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="4dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

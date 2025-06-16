@@ -58,7 +58,7 @@ public class LoginActivity extends Activity {
             edtPassword.setText(preferences.getString("matkhau", ""));
             chkRemember.setChecked(true);
         } else {
-            edtUsername.setText(""); // Để trống nếu không nhớ
+            edtUsername.setText("");
             edtPassword.setText("");
             chkRemember.setChecked(false);
         }

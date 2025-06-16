@@ -4,7 +4,7 @@ package com.example.Admin_ThanhSang.traicaythanhsang.ultil;
  * Created by ADMIN on 5/20/2025.
  */
 public class Server {
-    public static String localhost = "192.168.1.16";
+    public static String localhost = "192.168.9.34";
     public static String DuongdanLoaisp_admin = "http://" + localhost + ":80/server/getloaisp_admin.php";
     public static String DuongdanLoaisp = "http://" + localhost + ":80/server/getloaisp.php";
     public static String Duongdansanphammoinhat = "http://" + localhost + ":80/server/getsanphammoinhat.php";
@@ -21,7 +21,7 @@ public class Server {
     public static String DuongdanXoaSanPham = "http://" + localhost + ":80/server/adminxoa.php";
     public static String DuongdanSuaSanPham = "http://" + localhost + ":80/server/adminsua.php";
     public static String DuongdanXemSanPhamAdmin = "http://" + localhost + ":80/server/getsanpham_admin.php";
-    public static String DuongdanThongKeDoanhThu = "http://" + localhost + ":80/server/thongke_doanhthu.php"; // Thêm mới
+    public static String DuongdanThongKeDoanhThu = "http://" + localhost + ":80/server/thongke_doanhthu.php";
 
 
 }

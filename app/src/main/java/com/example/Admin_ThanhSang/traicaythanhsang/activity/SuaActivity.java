@@ -69,8 +69,9 @@ public class SuaActivity extends Activity {
             productDescription = bundle.getString("Motasanpham", "");
             productCategoryId = bundle.getInt("IDSanpham", -1);
 
-            if (productId == -1 || productName.isEmpty()) {
-                Log.e("SuaActivity", "Dữ liệu không đầy đủ từ Bundle");
+            Log.d("SuaActivity", "Received ID: " + productId + ", Name: " + productName + ", Price: " + productPrice + ", CategoryId: " + productCategoryId);
+            if (productId == -1) {
+                Log.e("SuaActivity", "Không nhận được ID sản phẩm từ Bundle");
                 Toast.makeText(this, "Không tìm thấy sản phẩm để sửa", Toast.LENGTH_SHORT).show();
                 finish();
                 return;
@@ -82,10 +83,9 @@ public class SuaActivity extends Activity {
 
             if (productImageUrl != null && !productImageUrl.isEmpty() && !productImageUrl.equals("0")) {
                 try {
-                    // Cập nhật URL để khớp với localhost
-                    if (!productImageUrl.startsWith("http://192.168.1.16/server/uploads/")) {
-                        if (productImageUrl.startsWith("http://192.168.1.16/uploads/")) {
-                            productImageUrl = productImageUrl.replace("http://192.168.1.16/uploads/", "http://192.168.1.16/server/uploads/");
+                    if (!productImageUrl.startsWith("http://192.168.9.34/server/uploads/")) {
+                        if (productImageUrl.startsWith("http://192.168.9.34/uploads/")) {
+                            productImageUrl = productImageUrl.replace("http://192.168.9.34/uploads/", "http://192.168.9.34/server/uploads/");
                         }
                     }
                     Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(productImageUrl).getContent());
@@ -131,23 +131,28 @@ public class SuaActivity extends Activity {
                 int categoryIndex = spinnerProductCategory.getSelectedItemPosition();
                 int categoryId = (categoryIndex > 0 && categoryIndex < categoryIds.size()) ? categoryIds.get(categoryIndex) : productCategoryId;
 
-                if (name.isEmpty() || priceStr.isEmpty() || description.isEmpty()) {
-                    Toast.makeText(SuaActivity.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                // Sử dụng giá trị cũ nếu không nhập
+                name = name.isEmpty() ? productName : name;
+                description = description.isEmpty() ? productDescription : description;
+                priceStr = priceStr.isEmpty() ? String.valueOf(productPrice) : priceStr;
 
                 int price;
                 try {
                     price = Integer.parseInt(priceStr);
+                    if (price < 0) {
+                        Toast.makeText(SuaActivity.this, "Giá không được âm", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 } catch (NumberFormatException e) {
-                    Toast.makeText(SuaActivity.this, "Giá phải là số", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SuaActivity.this, "Giá phải là số hợp lệ", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (selectedImageUri != null) {
-                    Log.d("SuaActivity", "Sending new image: " + selectedImageUri.toString());
-                } else {
-                    Log.d("SuaActivity", "Keeping old image: " + productImageUrl);
+                // Kiểm tra xem có thay đổi gì không
+                if (name.equals(productName) && price == productPrice && description.equals(productDescription)
+                        && categoryId == productCategoryId && selectedImageUri == null) {
+                    Toast.makeText(SuaActivity.this, "Không có thay đổi nào để lưu", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 updateProduct(productId, name, price, description, categoryId, selectedImageUri);
@@ -161,7 +166,6 @@ public class SuaActivity extends Activity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             selectedImageUri = data.getData();
             try {
-                // Kiểm tra loại file
                 String fileType = getContentResolver().getType(selectedImageUri);
                 if (!fileType.startsWith("image/")) {
                     Toast.makeText(SuaActivity.this, "Vui lòng chọn file ảnh", Toast.LENGTH_SHORT).show();
@@ -226,6 +230,11 @@ public class SuaActivity extends Activity {
     }
 
     private void updateProduct(int id, String name, int price, String description, int categoryId, Uri imageUri) {
+        if (id == -1) {
+            Toast.makeText(this, "ID sản phẩm không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         try {
             URL url = new URL(Server.DuongdanSuaSanPham);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -239,31 +248,44 @@ public class SuaActivity extends Activity {
             OutputStream os = conn.getOutputStream();
             StringBuilder body = new StringBuilder();
 
+            // Gửi id_sanpham
             body.append("--").append(boundary).append("\r\n");
             body.append("Content-Disposition: form-data; name=\"id_sanpham\"\r\n\r\n");
             body.append(id).append("\r\n");
 
-            body.append("--").append(boundary).append("\r\n");
-            body.append("Content-Disposition: form-data; name=\"tensanpham\"\r\n\r\n");
-            body.append(name).append("\r\n");
-
-            body.append("--").append(boundary).append("\r\n");
-            body.append("Content-Disposition: form-data; name=\"giasanpham\"\r\n\r\n");
-            body.append(price).append("\r\n");
-
-            body.append("--").append(boundary).append("\r\n");
-            body.append("Content-Disposition: form-data; name=\"motasanpham\"\r\n\r\n");
-            body.append(description).append("\r\n");
-
-            body.append("--").append(boundary).append("\r\n");
-            body.append("Content-Disposition: form-data; name=\"id_loaisanpham\"\r\n\r\n");
-            body.append(categoryId).append("\r\n");
-
-            if (imageUri != null) {
+            if (!name.equals(productName)) {
                 body.append("--").append(boundary).append("\r\n");
-                body.append("Content-Disposition: form-data; name=\"hinhanh\"; filename=\"image.jpg\"\r\n");
-                body.append("Content-Type: image/jpeg\r\n\r\n");
-                os.write(body.toString().getBytes());
+                body.append("Content-Disposition: form-data; name=\"tensanpham\"\r\n\r\n");
+                body.append(name).append("\r\n");
+            }
+
+            if (price != productPrice) {
+                body.append("--").append(boundary).append("\r\n");
+                body.append("Content-Disposition: form-data; name=\"giasanpham\"\r\n\r\n");
+                body.append(price).append("\r\n");
+            }
+
+            if (!description.equals(productDescription)) {
+                body.append("--").append(boundary).append("\r\n");
+                body.append("Content-Disposition: form-data; name=\"motasanpham\"\r\n\r\n");
+                body.append(description).append("\r\n");
+            }
+
+            if (categoryId != productCategoryId && categoryId != -1) {
+                body.append("--").append(boundary).append("\r\n");
+                body.append("Content-Disposition: form-data; name=\"id_loaisanpham\"\r\n\r\n");
+                body.append(categoryId).append("\r\n");
+            }
+
+            // Gửi body text
+            os.write(body.toString().getBytes());
+
+            // Nếu có ảnh
+            if (imageUri != null) {
+                String imageHeader = "--" + boundary + "\r\n"
+                        + "Content-Disposition: form-data; name=\"hinhanh\"; filename=\"image.jpg\"\r\n"
+                        + "Content-Type: image/jpeg\r\n\r\n";
+                os.write(imageHeader.getBytes());
 
                 InputStream is = getContentResolver().openInputStream(imageUri);
                 if (is != null) {
@@ -273,16 +295,10 @@ public class SuaActivity extends Activity {
                         os.write(buffer, 0, bytesRead);
                     }
                     is.close();
-                    Log.d("UpdateProduct", "Image sent successfully: " + imageUri.toString() + ", Bytes read: " + bytesRead);
                 } else {
-                    Log.e("UpdateProduct", "Failed to open InputStream for image: " + imageUri.toString());
-                    Toast.makeText(SuaActivity.this, "Không thể đọc ảnh mới", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Không thể đọc ảnh mới", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Log.d("UpdateProduct", "No new image, keeping old URL: " + productImageUrl);
-                // Không gửi trường hinhanh nếu không có ảnh mới
             }
-
             os.write(("\r\n--" + boundary + "--\r\n").getBytes());
             os.flush();
             os.close();
@@ -294,16 +310,15 @@ public class SuaActivity extends Activity {
                 response.append(line);
             }
             reader.close();
+            conn.disconnect();
 
-            Log.d("UpdateProduct", "JSON Response: " + response.toString());
             JSONObject jsonObject = new JSONObject(response.toString());
             boolean success = jsonObject.getBoolean("success");
             String message = jsonObject.getString("message");
-            String newImageUrl = jsonObject.optString("hinhanh_url", productImageUrl); // Lấy URL mới nếu có
+            String newImageUrl = jsonObject.optString("hinhanh_url", productImageUrl);
 
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
             if (success) {
-                // Cập nhật productImageUrl nếu có ảnh mới
                 if (!newImageUrl.equals(productImageUrl)) {
                     productImageUrl = newImageUrl;
                     try {
@@ -313,19 +328,18 @@ public class SuaActivity extends Activity {
                             imagePreview.setVisibility(View.VISIBLE);
                         }
                     } catch (Exception e) {
-                        Log.e("SuaActivity", "Lỗi tải ảnh mới sau cập nhật: " + e.getMessage());
                     }
                 }
+
                 Intent intent = new Intent();
                 intent.putExtra("PRODUCT_UPDATED", true);
                 setResult(RESULT_OK, intent);
                 finish();
             }
 
-            conn.disconnect();
         } catch (Exception e) {
             Toast.makeText(this, "Lỗi cập nhật sản phẩm: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            Log.e("UpdateProduct", "Error: " + e.getMessage());
         }
     }
+
 }

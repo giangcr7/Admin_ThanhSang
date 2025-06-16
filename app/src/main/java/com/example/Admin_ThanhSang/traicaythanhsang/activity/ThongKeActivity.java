@@ -5,24 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import android.widget.*;
+import com.android.volley.*;
+import com.android.volley.toolbox.*;
 import com.example.Admin_ThanhSang.traicaythanhsang.R;
 import com.example.Admin_ThanhSang.traicaythanhsang.ultil.Server;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.*;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import org.json.*;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.ArrayList;
 
 public class ThongKeActivity extends AppCompatActivity {
 
@@ -32,14 +26,14 @@ public class ThongKeActivity extends AppCompatActivity {
     private Spinner spinnerType;
     private RequestQueue requestQueue;
     private Toolbar toolbar;
-
+    private PieChart pieChart, pieChartSoLuong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thong_ke);
 
+        // Ánh xạ
         txtTongDoanhThu = (TextView) findViewById(R.id.txtTongDoanhThu);
         editDate = (EditText) findViewById(R.id.editDate);
         editMonth = (EditText) findViewById(R.id.editMonth);
@@ -47,63 +41,71 @@ public class ThongKeActivity extends AppCompatActivity {
         btnThongKe = (Button) findViewById(R.id.btnThongKe);
         spinnerType = (Spinner) findViewById(R.id.spinnerType);
         toolbar = (Toolbar) findViewById(R.id.toolbarthongke);
+        pieChart = (PieChart) findViewById(R.id.pieChart);
+        pieChartSoLuong = (PieChart) findViewById(R.id.pieChartSoLuong);
 
         requestQueue = Volley.newRequestQueue(this);
-        ActionToolbar(); // Gọi phương thức để thêm nút back
+        ActionToolbar();
 
+        // Spinner loại thống kê
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.thongke_types, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(adapter);
-        spinnerType.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+
+        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 updateVisibility(position);
             }
 
             @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
-        loadThongKe("total", "", "", "");
 
+        // Bắt sự kiện nút thống kê
         btnThongKe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String type = spinnerType.getSelectedItem().toString();
+                String url = Server.DuongdanThongKeDoanhThu;
+
                 String date = editDate.getText().toString().trim();
                 String month = editMonth.getText().toString().trim();
                 String year = editYear.getText().toString().trim();
 
-                // Xử lý type
-                if ("Tổng cộng".equals(type)) {
-                    loadThongKe("total", "", "", "");
-                } else if ("Theo ngày".equals(type)) {
+                if (type.equals("Theo ngày")) {
                     if (date.isEmpty()) {
                         Toast.makeText(ThongKeActivity.this, "Vui lòng nhập ngày", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    loadThongKe("day", date, "", "");
-                } else if ("Theo tháng".equals(type)) {
+                    url += "?type=day&date=" + date;
+                } else if (type.equals("Theo tháng")) {
                     if (month.isEmpty() || year.isEmpty()) {
                         Toast.makeText(ThongKeActivity.this, "Vui lòng nhập tháng và năm", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    loadThongKe("month", "", month, year);
-                } else if ("Theo năm".equals(type)) {
+                    url += "?type=month&month=" + month + "&year=" + year;
+                } else if (type.equals("Theo năm")) {
                     if (year.isEmpty()) {
                         Toast.makeText(ThongKeActivity.this, "Vui lòng nhập năm", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    loadThongKe("year", "", "", year);
+                    url += "?type=year&year=" + year;
+                } else {
+                    url += "?type=total";
                 }
 
-                // Xóa nội dung các EditText sau khi thống kê
+                loadThongKe(url);
+
                 editDate.setText("");
                 editMonth.setText("");
                 editYear.setText("");
             }
         });
+
+        // Mặc định hiển thị tổng cộng
+        loadThongKe(Server.DuongdanThongKeDoanhThu + "?type=total");
     }
 
     private void ActionToolbar() {
@@ -123,56 +125,82 @@ public class ThongKeActivity extends AppCompatActivity {
         editYear.setVisibility((position == 2 || position == 3) ? View.VISIBLE : View.GONE); // Theo tháng hoặc năm
     }
 
-    private void loadThongKe(String type, String date, String month, String year) {
-        String url = Server.DuongdanThongKeDoanhThu;
-        if ("day".equals(type) && !date.isEmpty()) {
-            url += "?type=day&date=" + date;
-        } else if ("month".equals(type) && !month.isEmpty() && !year.isEmpty()) {
-            url += "?type=month&month=" + month + "&year=" + year;
-        } else if ("year".equals(type) && !year.isEmpty()) {
-            url += "?type=year&year=" + year;
-        } else {
-            url += "?type=total";
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                new JSONObject(),
-                new Response.Listener<JSONObject>() {
+    private void loadThongKe(String url) {
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(String response) {
                         try {
-                            boolean success = response.getBoolean("success");
+                            JSONObject json = new JSONObject(response);
+                            boolean success = json.getBoolean("success");
+
                             if (success) {
-                                double tongdoanhthu = response.getDouble("tongdoanhthu");
-                                txtTongDoanhThu.setText(String.format("Tổng doanh thu: %,d VNĐ", (int) tongdoanhthu));
-                                Log.d("ThongKeActivity", "Tổng doanh thu: " + tongdoanhthu);
+                                JSONArray dataArray = json.getJSONArray("data");
+
+                                ArrayList<Entry> doanhthuEntries = new ArrayList<>();
+                                ArrayList<Entry> soluongEntries = new ArrayList<>();
+                                ArrayList<String> labels = new ArrayList<>();
+
+                                float tongDoanhThu = 0;
+
+                                for (int i = 0; i < dataArray.length(); i++) {
+                                    JSONObject item = dataArray.getJSONObject(i);
+                                    String loai = item.getString("loai");
+                                    float doanhthu = (float) item.getDouble("doanhthu");
+                                    int soluong = item.optInt("soluong");
+
+                                    doanhthuEntries.add(new Entry(doanhthu, i));
+                                    soluongEntries.add(new Entry(soluong, i));
+                                    labels.add(loai);
+
+                                    tongDoanhThu += doanhthu;
+                                }
+
+                                txtTongDoanhThu.setText(String.format("Tổng doanh thu: %,d VNĐ", (int) tongDoanhThu));
+                                showPieChart(pieChart, doanhthuEntries, labels, "Doanh thu theo loại");
+                                showPieChart(pieChartSoLuong, soluongEntries, labels, "Số lượng theo loại");
+
                             } else {
-                                String message = response.getString("message");
-                                Toast.makeText(ThongKeActivity.this, message, Toast.LENGTH_SHORT).show();
-                                Log.e("ThongKeActivity", "Lỗi: " + message);
+                                Toast.makeText(ThongKeActivity.this, "Không có dữ liệu", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
-                            Toast.makeText(ThongKeActivity.this, "Lỗi phân tích JSON: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            Log.e("ThongKeActivity", "JSONException: " + e.getMessage());
+                            Toast.makeText(ThongKeActivity.this, "Lỗi JSON: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Log.e("ThongKe", "JSON error: " + e.getMessage());
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        String errorMsg = "Lỗi tải thống kê: ";
-                        if (error.networkResponse != null) {
-                            errorMsg += "Status Code: " + error.networkResponse.statusCode;
-                        } else {
-                            errorMsg += error.getMessage();
-                        }
-                        Toast.makeText(ThongKeActivity.this, errorMsg, Toast.LENGTH_LONG).show();
-                        Log.e("ThongKeActivity", errorMsg);
+                        Toast.makeText(ThongKeActivity.this, "Lỗi mạng: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("ThongKe", "Volley error: " + error.getMessage());
                     }
                 });
 
         requestQueue.add(request);
     }
+
+    private void showPieChart(PieChart chart, ArrayList<Entry> entries, ArrayList<String> labels, String centerText) {
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataSet.setValueTextSize(14f);
+
+        // Sửa lại ValueFormatter cho đúng với phiên bản 2.2.5
+        dataSet.setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, com.github.mikephil.charting.utils.ViewPortHandler viewPortHandler) {
+                return String.format("%d", (int) value); // Hiển thị số nguyên
+            }
+        });
+
+        PieData data = new PieData(labels, dataSet);
+        chart.setData(data);
+        chart.setCenterText(centerText);
+        chart.setUsePercentValues(false);
+        chart.setDescription("");
+        chart.animateY(1000);
+        chart.invalidate();
+    }
+
+
 }

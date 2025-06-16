@@ -21,6 +21,7 @@ import com.example.Admin_ThanhSang.traicaythanhsang.R;
 import com.example.Admin_ThanhSang.traicaythanhsang.ultil.CheckConnection;
 import com.example.Admin_ThanhSang.traicaythanhsang.ultil.Server;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,6 +40,8 @@ public class Thongtinkhachhang extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thongtinkhachhang);
         Anhxa();
+
+        // Lấy id_khachhang từ SharedPreferences với đúng tên và kiểu dữ liệu
         SharedPreferences sharedPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         String idStr = sharedPreferences.getString("id_khachhang", "-1");
         try {
@@ -130,17 +133,19 @@ public class Thongtinkhachhang extends AppCompatActivity {
 
                                     int madonhangInt = Integer.parseInt(madonhang);
                                     if (madonhangInt > 0) {
+                                        ThemChiTietDonHangJson(madonhangInt);
                                         MainActivity.manggiohang.clear();
                                         CheckConnection.ShowToast_Short(getApplicationContext(), "Bạn đã thêm dữ liệu giỏ hàng thành công");
+
 
                                         if (rdbTienmat.isChecked()) {
                                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                             startActivity(intent);
                                             CheckConnection.ShowToast_Short(getApplicationContext(), "Bạn đã chọn thanh toán tiền mặt");
                                         } else if (rdbChuyenkhoan.isChecked()) {
+                                            CheckConnection.ShowToast_Short(getApplicationContext(), "Bạn đã chọn thanh toán chuyển khoản");
                                             Intent intent = new Intent(getApplicationContext(), ChuyenKhoanActivity.class);
                                             startActivity(intent);
-                                            CheckConnection.ShowToast_Short(getApplicationContext(), "Bạn đã chọn thanh toán chuyển khoản");
                                         } else {
                                             CheckConnection.ShowToast_Short(getApplicationContext(), "Vui lòng chọn phương thức thanh toán");
                                         }
@@ -172,6 +177,50 @@ public class Thongtinkhachhang extends AppCompatActivity {
             }
         });
     }
+
+    private void ThemChiTietDonHangJson(final int madonhang) {
+        try {
+            JSONArray jsonArray = new JSONArray();
+            for (int i = 0; i < MainActivity.manggiohang.size(); i++) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("madonhang", madonhang);
+                jsonObject.put("id_sanpham", MainActivity.manggiohang.get(i).getIdsp());
+                jsonObject.put("tensanpham", MainActivity.manggiohang.get(i).getTensp());
+                jsonObject.put("giasanpham", MainActivity.manggiohang.get(i).getGiasp());
+                jsonObject.put("soluongsanpham", MainActivity.manggiohang.get(i).getSoluongsp());
+                jsonArray.put(jsonObject);
+            }
+
+            final String jsonStr = jsonArray.toString();
+
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, Server.Duongdanchitietdonhang,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            // Không cần xử lý gì nếu không muốn log hoặc hiển thị
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // Không xử lý lỗi nếu bạn không muốn hiển thị hoặc log
+                        }
+                    }
+            ) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    params.put("json", jsonStr);
+                    return params;
+                }
+            };
+            requestQueue.add(stringRequest);
+        } catch (Exception e) {
+            // Không cần log lỗi nếu không mong muốn
+        }
+    }
+
 
     private void Anhxa() {
         edtdiachi  = (EditText) findViewById(R.id.edittexdiachikhachhang);

@@ -25,7 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.Admin_ThanhSang.traicaythanhsang.R;
-import com.example.Admin_ThanhSang.traicaythanhsang.adapter.SanphamAdapter;
+import com.example.Admin_ThanhSang.traicaythanhsang.adapter.QuanLyAdapter;
 import com.example.Admin_ThanhSang.traicaythanhsang.model.Sanpham;
 import com.android.volley.toolbox.Volley;
 import com.example.Admin_ThanhSang.traicaythanhsang.ultil.Server;
@@ -43,26 +43,25 @@ public class QuanLyActivity extends AppCompatActivity {
     private static final int EDIT_PRODUCT_REQUEST = 2;
     private RecyclerView recyclerView;
     private ArrayList<Sanpham> productList;
-    private SanphamAdapter adapter;
+    private QuanLyAdapter adapter;
     private RequestQueue requestQueue;
     private EditText searchView;
     private Button btnRefresh;
     private boolean isDataLoaded = false;
-    private Toolbar toolbar; // Khai báo toolbar làm biến thành viên
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbarquanly); // Gán giá trị cho toolbar
+        toolbar = (Toolbar) findViewById(R.id.toolbarquanly);
         setSupportActionBar(toolbar);
-        ActionToolbar(); // Gọi phương thức để thêm nút back
+        ActionToolbar();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerviewquanly);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         productList = new ArrayList<>();
-        adapter = new SanphamAdapter(this, productList) {
+        adapter = new QuanLyAdapter(this, productList) {
             @Override
             public void onBindViewHolder(ItemHolder holder, final int position) {
                 super.onBindViewHolder(holder, position);
@@ -78,6 +77,7 @@ public class QuanLyActivity extends AppCompatActivity {
                 });
             }
         };
+
         recyclerView.setAdapter(adapter);
 
         searchView = (EditText) findViewById(R.id.searchView);
@@ -96,14 +96,12 @@ public class QuanLyActivity extends AppCompatActivity {
                 if (!tuKhoa.isEmpty()) {
                     timKiemSanPham(tuKhoa);
                 } else {
-                    loadProducts(); // Khôi phục danh sách gốc khi text rỗng
+                    loadProducts();
                 }
             }
             @Override
             public void afterTextChanged(Editable s) {}
         });
-
-        // Tích hợp làm mới
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,8 +272,6 @@ public class QuanLyActivity extends AppCompatActivity {
             }
         });
     }
-
-    // Thêm phương thức timKiemSanPham
     private void timKiemSanPham(final String tuKhoa) {
         TimKiemSanPham.timKiemSanPham(this, tuKhoa, new TimKiemSanPham.TimKiemCallback() {
             @Override

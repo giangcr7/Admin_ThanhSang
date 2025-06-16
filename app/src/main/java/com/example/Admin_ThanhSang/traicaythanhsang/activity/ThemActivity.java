@@ -43,8 +43,6 @@ public class ThemActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_them);
-
-        // Bỏ qua strict mode để cho phép mạng trên main thread (chỉ để debug)
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -232,7 +230,7 @@ public class ThemActivity extends Activity {
 
             Toast.makeText(ThemActivity.this, message, Toast.LENGTH_SHORT).show();
             if (success) {
-                finish(); // Quay lại QuanLyActivity
+                finish();
             }
 
             conn.disconnect();
