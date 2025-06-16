@@ -51,27 +51,6 @@
             android:inputType="textPassword"
             android:background="@android:drawable/edit_text"
             android:layout_marginBottom="10dp" />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <CheckBox
-                android:id="@+id/chkRemember"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nhớ đăng nhập này"
-                android:textColor="#000000"
-                android:layout_marginRight="10dp"/>
-            <TextView
-                android:id="@+id/txtForgot"
-                android:text="Quên mật khẩu?"
-                android:textColor="#000000"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
@@ -81,18 +60,5 @@
             android:textColor="#ffffff"
             android:layout_marginBottom="12dp" />
 
-        <Button
-            android:id="@+id/btnGotoRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chưa có tài khoản? Đăng ký"
-            android:background="#ffffff"
-            android:textColor="#4CAF50"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="4dp"
-            android:drawableLeft="@android:drawable/ic_menu_add"
-            android:onClick="ClickGotoRegister" />
-
     </LinearLayout>
-
 </LinearLayout>

@@ -12,11 +12,8 @@ public class Server {
     public static String Duongdandonhang = "http://" + localhost + ":80/server/thongtinkhachhang.php";
     public static String Duongdanchitietdonhang = "http://" + localhost + ":80/server/chitietdonhang.php";
     public static String DuongdanTimKiemSanPham = "http://" + localhost + ":80/server/timkiemsanpham.php?keyword=";
-    public static String DuongdanDangKy = "http://" + localhost + ":80/server/dangky.php";
-    public static String DuongdanDangNhap = "http://" + localhost + ":80/server/dangnhap.php";
+    public static String DuongdanDangNhap_Admin = "http://" + localhost + ":80/server/dangnhap_admin.php";
     public static String Duongdanlaythongtinkhachhang = "http://" + localhost + ":80/server/laythongtinkhachhang.php";
-    public static String Duongdanlichsu = "http://" + localhost + ":80/server/lichsu.php";
-    public static String DuongdanReset = "http://" + localhost + ":80/server/forgot_password.php";
     public static String DuongdanThemSanPham = "http://" + localhost + ":80/server/adminthem.php";
     public static String DuongdanXoaSanPham = "http://" + localhost + ":80/server/adminxoa.php";
     public static String DuongdanSuaSanPham = "http://" + localhost + ":80/server/adminsua.php";
