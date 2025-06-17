@@ -48,7 +48,9 @@
         <activity android:name=".activity.QuanLyActivity" />
         <activity android:name=".activity.ThemActivity" />
         <activity android:name=".activity.SuaActivity" />
-        <activity android:name=".activity.ThongKeActivity"></activity>
+        <activity android:name=".activity.ThongKeActivity" />
+        <activity android:name=".activity.OrderListActivity" />
+        <activity android:name=".activity.OrderDetailActivity"></activity>
     </application>
 
 </manifest>

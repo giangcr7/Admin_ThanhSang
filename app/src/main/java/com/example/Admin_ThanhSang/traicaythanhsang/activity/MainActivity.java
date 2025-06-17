@@ -219,9 +219,15 @@ public class MainActivity extends AppCompatActivity {
                         }
                         drawerLayout.closeDrawer(GravityCompat.START);
                         break;
-
-
-
+                    case 8:
+                        if (CheckConnection.isInternetAvailable(getApplicationContext())) {
+                            Intent intent = new Intent(MainActivity.this, OrderListActivity.class);
+                            startActivity(intent);
+                        } else {
+                            CheckConnection.ShowToast_Short(getApplicationContext(), "Kiểm tra kết nối");
+                        }
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
 
                 }
             }
@@ -235,7 +241,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Gọi tìm kiếm mỗi khi text thay đổi
                 timKiemSanPham(s.toString().trim());
             }
 
@@ -328,7 +333,9 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     mangloaisp.add(6, new Loaisp(0,"Quản lý","https://png.pngtree.com/png-clipart/20221230/original/pngtree-history-symbol-icon-png-image_8831663.png"));
+
                     mangloaisp.add(7, new Loaisp(0,"Thống kê","https://png.pngtree.com/png-clipart/20221230/original/pngtree-history-symbol-icon-png-image_8831663.png"));
+                    mangloaisp.add(8, new Loaisp(0,"Duyệt đơn","https://png.pngtree.com/png-clipart/20221230/original/pngtree-history-symbol-icon-png-image_8831663.png"));
 
                 }
             }
